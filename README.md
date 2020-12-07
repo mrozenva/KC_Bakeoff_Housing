@@ -1,79 +1,68 @@
 # Kings County Housing Bake-off
 
-For many machine learning projects, the goal is to create a model that best predicts the target variable on unseen data. In order to develop a model, we have a general process, but there is a lot of flexibility within this process. Even when working with the same data, people can produce different models by engineering different features, or by selecting certain features to include in the models. **There is no one correct way to create a model**.
+<image>
 
-For Phase 2, you will be creating a model that will **predict the prices of homes** sold in the Seattle, WA area. For this project there will be **3 deliverables**:
+## Overview
 
-- a Github repo for this project
-- a notebook showing your final modeling process
-- a CSV file of your predictions on the holdout set
-	- name this file `housing_preds_your_name.csv` (replacing `your_name` with your name) and send via Slack
+This project utilizes linear regression analysis to predict housing prices in Kings County, Seattle, WA. The training data for this will be cleaned and then explored for feature engineering. The packages used in this project are from the Scikit python library.
 
-## Holdout predictions
+## Business Problem
 
-You will develop a model using `kc_house_data_train.csv`. Then you will use that model/process to predict on the `kc_house_data_holdout_features.csv`. 
+A Seattle real estate company is trying to accurately predict housing prices in Kings County. Being able to accurately predict prices of homes based on their relative features will aide in maximizing profits. Our job is to use our Python and more specifically linear regression knowledge, to help them in becoming a more sophisticated business.
 
-***Important note #1***: If you create a new feature with your training data, you will need to do the same thing with the test data before using the model to predict on the holdout data.  
+## Approach
 
-After using your model to predict the holdout data, you will submit those predictions as a `.csv` file to the instructional staff. We will score the submitted predictions using the RMSE of those predictions.
+    1. Check and clean the data for impurities
+    2. Perform EDA and statistical analysis to grasp a better undertanding of the data
+    3. Get a baseline model with few changes to the dataset
+    4. Engineer new features based on findings
+    5. Model several linear regression models and choose the one with the lowest RMSE
+    6. Apply the model to the holdout dataset
+    
+## Methods
 
-***Important note #2***: While we will score and rank each submission, your class rank will **not** have any direct impact on passing Phase 2. *The goal is to make sure you can actually produce predictions*.
+No data cleaning was used apart from the few observations that had been determined to have false records when they were cross referenced with Zillow.
 
-So as long as you successfully **complete the modeling process** and can **explain the work you did**, you will be able to pass.  
+The data was standardized using sklearn's standard scalar. 
 
-## Final notebook
+I used independent T tests to decide which features were key in determining price. Then I created interaction columns and polynomial columns for all of my features. In addition, I used geospatial data for Pikes Place, a market in the center of city to determine roughly how far each home was from the heart of Seattle. The zipcodes were also dummied and added to the data set.
 
-Through the modeling process, you will try many different techniques (**feature engineering** and **feature selection**, for example) to try and create your best model. Some will work and some will not lead to a better model. Through your modeling process, you will identify what actions create the best model. After you have finalized your process, you must create a 'cleaned up' and annotated notebook that shows your process.
+When creating my model I used a train test split on the data trying to get the lowest possible RMSE. My second model used my zipcode dummies along with my new features that I created to get me an RMSE of 125K. I only used my top 54 features in the model.
 
-Your notebook must include the following:
+## Results
 
-- **Exploratory Data Analysis (EDA):** You must create **at least 4 data visualizations** that help to explain the data. These visualizations should help someone unfamiliar with the data understand the target variable and the features that help explain that target variable.
+### Does a house on the waterfront impact its price?
 
-- **Feature Engineering:** You must create **at least 3 new features** to test in your model. Those features do not have to make it into your final model, as they might be removed during the feature selection process. That is expected, but you still need to explain the features you engineer and your thought process behind why you thought they would explain the selling price of the house.  
+(IMAGE)
 
-- **Statistical Tests:** Your notebook must show **at least 3 statistical tests** that you preformed on your data set. Think of these as being part of your EDA process; for example, if you think houses with a view cost more than those without a view, then perform a two-sample T-test. These can be preliminary evidence that a feature will be important in your model.  
+From our analysis we got a p-value of 3.47e-23 which is lower than our alpha of 0.05. With this we can conclude that a house on the waterfront does impact its average price
 
-- **Feature Selection:** There are many ways to do feature selection: filter methods, P-values, or recursive feature elimination (RFE). You should try multiple different techniques and combinations of them. For your final model, you will **settle on a process of feature selection**; this process should be **clearly shown in your final notebook**.
+### Is the number of bedrooms directly correlated with price?
 
-- **Model Interpretation:** One of the benefits of a linear regression model is that you can **interpret the coefficients** of the model **to derive insights**. For example, which feature has the biggest impact on the price of the house? Was there a feature that you thought would be significant but was not? Think if you were a real estate agent helping clients price their house: what information would you find most helpful from this model?
+(IMAGE) 
 
-## GitHub Repository
+As we see homes that have more than 2 bedrooms we can see the price of the home drastically increase.
 
-A GitHub repo is a good way to keep track of your work, but also to display the work you did to future employers. Your GitHub should contain the following:
+### Does location (based on zipcode) impact price?
 
-- A `README.md` that briefly describes the project and the files within the repo.
-- Your cleaned and annotated notebook showing your work.
-- A folder with all of your 'working' notebooks where you played around with your data and the modeling process.
+(IMAGE)
 
-## Data Set Information
+We got very low p-values for all the zipcodes that we dummied. Meaning taht we can reject the null hypothesis and conclude that zipcode does have an effect on the price of the home.
 
-This data set contains information about houses that were sold in the Seattle area during the last decade. Below is a description of the column names, to help you understand what the data represents. As with most real world data sets, the column names are not perfectly described, so you'll have to do some research or use your best judgment if you have questions relating to what the data means. 
 
-Like every data set, there are some irregularities and quirks. Trust me, there wasn't a house sold with 33 bedrooms, even though the data says there was. *You have to decide how you want to handle that example*. Also, some houses were sold more than once within the time frame of this dataset. Think about how that can be useful information in predicting the selling price.
+## Modelling
 
-As you go through this modeling process, think about what determines how much someone will pay for a house.  For example, the larger the house is, the more people will pay for it. If you understand why certain houses cost more than others and represent that in your model, it will be a more accurate model.  
+Using the Scikit-learn package I developed 4 models.
+  
+  1. Linear Regression
+  2. Linear Regression Using Recursive Feature Elimination
+  3. Linear Regression Using K-best
+  
+## Summary
 
-Have fun!
+I was able to reduce my RMSE by almost 70k since my first model. Creating new features for basement and renovation, as well as coding the zipcode into dummy varaibles turned out to be extremely helpful. Hopefully the firm can use my findings to help them better predict housing prices. 
 
-# Column Names and descriptions for Kings County Data Set
-* **id** - unique ID for a house
-* **date** - Date day house was sold
-* **price** - Price is prediction target
-* **bedrooms** - Number of bedrooms
-* **bathrooms** - Number of bathrooms
-* **sqft_living** - square footage of the home
-* **sqft_lot** - square footage of the lot
-* **floors** - Total floors (levels) in house
-* **waterfront** - Whether house has a view to a waterfront
-* **view** - Number of times house has been viewed
-* **condition** - How good the condition is (overall)
-* **grade** - overall grade given to the housing unit, based on King County grading system
-* **sqft_above** - square footage of house (apart from basement)
-* **sqft_basement** - square footage of the basement
-* **yr_built** - Year when house was built
-* **yr_renovated** - Year when house was renovated
-* **zipcode** - zip code in which house is located
-* **lat** - Latitude coordinate
-* **long** - Longitude coordinate
-* **sqft_living15** - The square footage of interior housing living space for the nearest 15 neighbors
-* **sqft_lot15** - The square footage of the land lots of the nearest 15 neighbors
+## Future Work
+
+Future work involved create additional features, as getting houses within the distinct top 5 neighborhoods and figuring out just how big of an impact those homes are making. As well as, maybe trying to see the month in which sales are the highest. Overall, there is a lot to be done, but this is a step into the right direction.
+
